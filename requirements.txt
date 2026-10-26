@@ -1,0 +1,17 @@
+# Core dependencies (AD generation, Gemini TTS, and evaluation)
+google-genai>=1.0.0
+numpy>=1.24.0
+pandas>=2.0.0
+requests>=2.31.0
+tqdm>=4.65.0
+# Tables and figures (analysis/)
+matplotlib>=3.7.0
+seaborn>=0.13.0
+
+# Optional: Google Cloud TTS backend at 1.2x speaking rate (--cloud_tts), the
+# setting used for the paper's temporal metrics. Also needs Application Default
+# Credentials (gcloud auth application-default login).
+#   pip install google-cloud-texttospeech
+
+# Optional: non-Gemini model baselines (GPT, Claude, Qwen)
+#   pip install anthropic dashscope openai opencv-python

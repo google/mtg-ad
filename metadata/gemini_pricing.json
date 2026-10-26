@@ -1,0 +1,54 @@
+{
+  "_comment": [
+    "Gemini API paid-tier (Standard) prices in USD per 1M tokens, copied from",
+    "https://ai.google.dev/gemini-api/docs/pricing (page last updated",
+    "2026-10-22, retrieved 2026-10-23). Prices change: check the page and",
+    "edit this file, or pass your own file with --pricing_file.",
+    "Batch/Flex/Priority tiers, free-tier usage, context-cache storage and",
+    "grounding fees are not modelled. Each model has a list of price periods",
+    "(inclusive 'from'/'until' dates, UTC); the period containing the date of",
+    "the API call is used. Keys:",
+    "  input: input tokens (text/image/video, and audio unless",
+    "    input_audio is set)",
+    "  input_audio: input audio tokens, for models that price audio separately",
+    "  cached_input / cached_input_audio: implicitly or explicitly cached",
+    "    input",
+    "  output: output tokens, including thinking tokens (audio for TTS models)",
+    "Models missing from this file get token counts but no cost",
+    "(cost_usd = null)."
+  ],
+  "source":
+      "https://ai.google.dev/gemini-api/docs/pricing (retrieved 2026-10-23)",
+  "models": {
+    "gemini-3.8-flash": [
+      {"until": "2026-12-31", "input": 0.75, "cached_input": 0.075,
+       "output": 3.75},
+      {"from": "2027-01-01", "input": 1.50, "cached_input": 0.15,
+       "output": 7.50}
+    ],
+    "gemini-3.6-flash": [
+      {"until": "2026-12-31", "input": 0.75, "cached_input": 0.075,
+       "output": 3.75},
+      {"from": "2027-01-01", "input": 1.50, "cached_input": 0.15,
+       "output": 7.50}
+    ],
+    "gemini-3.5-flash-lite": [
+      {"input": 0.30, "cached_input": 0.03, "output": 2.50}
+    ],
+    "gemini-3-flash-preview": [
+      {"input": 0.50, "input_audio": 1.00, "cached_input": 0.05,
+       "cached_input_audio": 0.10, "output": 3.00}
+    ],
+    "gemini-2.5-flash": [
+      {"input": 0.30, "input_audio": 1.00, "cached_input": 0.03,
+       "cached_input_audio": 0.10, "output": 2.50}
+    ],
+    "gemini-2.5-flash-preview-tts": [
+      {"input": 0.50, "output": 10.00}
+    ],
+    "gemini-3.8-flash-tts": [
+      {"until": "2026-12-31", "input": 0.50, "output": 9.00},
+      {"from": "2027-01-01", "input": 1.00, "output": 18.00}
+    ]
+  }
+}

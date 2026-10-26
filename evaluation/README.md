@@ -1,0 +1,123 @@
+# AD Evaluation
+
+Evaluates generated audio descriptions (AD) with the fine-grained metrics from
+the paper. The LLM judge defaults to **Gemini 3.8 Flash**
+(`--gemini_model gemini-3.8-flash`).
+
+## Metrics
+
+| Group | Metric (JSON key) | Needs |
+| :--- | :--- | :--- |
+| Content (G1.1) | Prioritization: `metric_G1.1_precision_avg_ad_in_visual_info` | visual info |
+| Content (G1.2) | No redundancy: `metric_2_1_does_not_restate` | transcript with speech |
+| Content (G1.3) | On-screen text: `metric_1_2_narrates_onscreen_text`, `onscreen_text_present` | visual info |
+| Temporal (G2) | Timeliness: `metric_g_2_avg_diff_time`, `metric_g_2_max_diff_time`, `metric_g_2_matched_visual_info_ratio`, `metric_g_2_diffs_over_ten` | visual info |
+| Temporal (G7) | Overlaps: `total_overlap` (T_overlap, s), `num_overlap_intervals` (K_overlap), `avg_overlap_ad_secs` (T/K), `tts_ad_transcript_overlap_seconds`, `tts_ad_self_overlap_seconds` | TTS |
+| Temporal (G8) | Audio coverage: `ad_total_speaking_time_per_silent_second`; silence: `avg_silence_duration_w_ad_tts`, `total_silence_duration_w_ad_tts`; `speech_density_w_ad_tts_dialog` | TTS |
+| Qualitative, reference-free | Quality-RF: `{variant}_descriptive`, `_objective`, `_accurate`, `_clear` (1–5), plus `_summary`, `_rationale` | video (+ ASR / visual info) |
+| Qualitative, reference-based | VideoA11y-Ref: `videoa11y_descriptive`, `_objective`, `_accurate`, `_clear` (1–5), `videoa11y_reason` | GT AD |
+
+### Reference-free qualitative metrics (Quality-RF)
+
+The judge watches the video (YouTube URL, or the local MP4 from
+`--input_video_dir`) and rates the AD without a human reference, so it works on
+any video. Choose variants with `--reference_free_metrics` (comma-separated):
+
+| Variant | Judge inputs besides video and AD |
+| :--- | :--- |
+| `video_asr` **(default)** | ASR transcript |
+| `video_only` | none |
+| `video_visual_info` | dense visual information |
+| `video_visual_info_asr` | visual information + ASR transcript |
+
+`video_asr` runs by default for every video; VideoA11y-Ref is added when a GT
+AD exists (`--input_gt_ad_dir`). Use `--reference_free_metrics none` to skip
+Quality-RF. The prompts are in [reference_free.py](reference_free.py).
+Only the Gemini judge can watch videos; the other judges skip Quality-RF.
+The non-Gemini judges (`--genai_model qwen|gpt|claude`) are kept from the
+paper's judge comparison and were not re-tested with this release.
+
+### Temporal metrics need TTS
+
+AD durations come from TTS audio (`generate_tts.py`, passed via
+`--input_tts_dir`). They are **not** estimated from word counts: without TTS
+output the temporal metrics are left out, and a warning is printed. Incomplete
+TTS output (a missing segment) is an error for that video.
+
+The paper's temporal numbers use Google Cloud TTS at 1.2x
+(`generate_tts.py --cloud_tts`). The default Gemini TTS speaks more slowly, so
+its overlap and coverage values are higher.
+
+### Missing metrics are omitted, never zero
+
+A metric that cannot be computed is left out of the video's JSON, so means over
+videos are not skewed (e.g. a failed generation does not count as 0 s of
+overlap):
+
+-   `"status": "no_parseable_ad"`: the AD has no timed lines (empty or refused
+    response); the file has no metric values.
+-   `"skipped_metrics"`: metric groups skipped for missing inputs
+    (`tts_temporal_metrics`, `visual_info_metrics`, `reference_free_metrics`).
+-   `"failed_judge_calls"`: LLM-judge calls that failed. Successful responses
+    are cached, so re-running fills them in.
+
+`run_ad_eval.py` prints a per-video failure summary and exits with status 1 if
+any video failed or is incomplete. Errors that would affect every video (e.g.
+an unknown model name, which the Gemini API reports as `404 NOT_FOUND`, or an
+invalid API key) stop the run immediately.
+
+## Inputs
+
+Text files are named `output_{VIDEO_ID}.txt`; TTS metadata is
+`{VIDEO_ID}_tts_metadata.json` (or WAVs named `{VIDEO_ID}_tts_{md5(text)}.wav`).
+`run_end_to_end.py --layout per_step` writes `transcript/`, `auto_ad/`,
+`visual_info/`, and `tts/` in this format.
+
+| Argument | Content | Notes |
+| :--- | :--- | :--- |
+| `--input_auto_ad_dir` | Generated AD to evaluate | Raw model output is fine; it is normalized. |
+| `--input_transcript_dir` | Timestamped ASR transcripts | Empty file = no speech. Missing files are generated with Gemini. |
+| `--input_visual_info_dir` | Dense visual information | Missing files are generated with Gemini. |
+| `--input_tts_dir` | TTS metadata / WAVs | Required for temporal metrics. |
+| `--input_gt_ad_dir` | Ground-truth AD | Optional; enables VideoA11y-Ref. |
+| `--input_video_dir` | Local MP4s: `{VIDEO_ID}.mp4`, or any MP4 whose file name maps to the ID (`My video.mp4` -> `My_video`, see `common/local_video.py`) | Optional; otherwise YouTube URLs. Without `--video_ids_file`, every MP4 in it is evaluated. |
+
+Generated transcripts / visual info are cached in
+`{output_dir}/generated_transcript/` and `{output_dir}/generated_visual_info/`
+(generated by `--gemini_model`). Pass `--no_generate_missing_inputs` to require
+the files instead.
+
+### Video IDs and durations
+
+`--video_ids_file` has one `video_id [duration]` per line. If the duration
+column is absent, durations come from `--video_durations_file`, which defaults
+to the bundled [metadata/video_durations.json](../metadata/video_durations.json)
+(all 433 dataset videos). Videos in neither are measured from their local MP4
+(with ffprobe, or OpenCV) when `--input_video_dir` has one, and otherwise timed
+by their latest timestamp.
+
+## Usage
+
+```bash
+python run_ad_eval.py \
+  --api_key_path /path/to/gemini_api_key.txt \
+  --video_ids_file test_video_ids.txt \
+  --output_dir eval_results/ \
+  --input_auto_ad_dir auto_ad/ \
+  --input_transcript_dir raw/test/transcript/ \
+  --input_visual_info_dir raw/test/visual_info/ \
+  --input_gt_ad_dir raw/test/gt_ad/ \
+  --input_tts_dir tts_cloud/
+```
+
+Run `python run_ad_eval.py --help` for all options.
+
+## Output
+
+Per-video metrics: `{output_dir}/metrics/output_{VIDEO_ID}.json`. Raw judge
+responses are cached in `precision_visual_info/`, `timeliness/`,
+`does_not_restate/`, `videoa11y_metric/`, and `{variant}_metric/` (e.g.
+`video_asr_metric/`), plus `narrates_onscreen_text/`.
+
+The per-video computation is also a library call,
+`evaluation.evaluation.compute_metrics()`, which `run_end_to_end.py` uses.
