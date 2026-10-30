@@ -2,12 +2,14 @@
 
 This repository contains the code and dataset instructions for the paper:
 
-> **Mind The Gap: Dataset and Fine-grained Evaluation for End-to-End Inline
-> Audio Descriptions**
+> [**Mind The Gap: Dataset and Fine-grained Evaluation for End-to-End Inline Audio Descriptions**](https://arxiv.org/abs/2610.39955)
+>
+> [Subhashini Venugopalan](https://vsubhashini.github.io/), Jenny Tan, Taylor Roper, Jimmy Tobin,
+> Anton Kast, Alicia Martin, Sam Sepah, [Amy Pavel](https://amypavel.com/)
 >
 > NeurIPS 2026 Evaluations & Datasets Track.
 
-[Paper](PAPER_URL_TBD) ·
+[Paper](https://arxiv.org/abs/2610.39955) ·
 [Dataset](https://huggingface.co/datasets/google/mind-the-gap-inline-ad) ·
 [Code](https://github.com/google/mtg-ad)
 
