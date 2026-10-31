@@ -3,7 +3,7 @@
 [**Mind The Gap (MTG-AD): Dataset and Fine-grained Evaluation for End-to-End Inline Audio Descriptions**](https://arxiv.org/abs/2610.39955)<br>
 [Subhashini Venugopalan](https://vsubhashini.github.io/), Jenny Tan, Taylor Roper, Jimmy Tobin, Anton Kast, Alicia Martin, Sam Sepah, [Amy Pavel](https://amypavel.com/)<br>
 NeurIPS 2026 Evaluations & Datasets Track<br>
-[Paper](https://arxiv.org/abs/2610.39955) | [Dataset](https://huggingface.co/datasets/google/mind-the-gap-inline-ad) | [Code](https://github.com/google/mtg-ad)
+[Paper](https://arxiv.org/abs/2610.39955) | [Dataset](https://huggingface.co/datasets/google/mind-the-gap-inline-ad) | [Code](https://github.com/google/mtg-ad) | [Example](https://youtu.be/S17yR4ulOmw)
 
 > **TL;DR:** We study **end-to-end inline audio description (AD)** for video accessibility, where multimodal LLMs must generate coherent, timestamped descriptions across full-length, untrimmed videos. Generated scripts are rendered into the audio track to assess temporal fit with the video's natural pauses and overall quality as a listener experiences them. We introduce a dataset co-annotated by paired blind and sighted professionals and a reference-free evaluation suite validated with sighted raters and blind and low-vision (BLV) participants.
 
