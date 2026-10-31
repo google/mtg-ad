@@ -3,13 +3,13 @@
 [**Mind The Gap (MTG-AD): Dataset and Fine-grained Evaluation for End-to-End Inline Audio Descriptions**](https://arxiv.org/abs/2610.39955)<br>
 [Subhashini Venugopalan](https://vsubhashini.github.io/), Jenny Tan, Taylor Roper, Jimmy Tobin, Anton Kast, Alicia Martin, Sam Sepah, [Amy Pavel](https://amypavel.com/)<br>
 NeurIPS 2026 Evaluations & Datasets Track<br>
-[Paper](https://arxiv.org/abs/2610.39955) | [Dataset](https://huggingface.co/datasets/google/mind-the-gap-inline-ad) | [Code](https://github.com/google/mtg-ad) | [Example](https://youtu.be/S17yR4ulOmw)
+[Paper](https://arxiv.org/abs/2610.39955) | [Dataset](https://huggingface.co/datasets/google/mind-the-gap-inline-ad) | [Code](https://github.com/google/mtg-ad)
 
 > **TL;DR:** We study **end-to-end inline audio description (AD)** for video accessibility, where multimodal LLMs must generate coherent, timestamped descriptions across full-length, untrimmed videos. Generated scripts are rendered into the audio track to assess temporal fit with the video's natural pauses and overall quality as a listener experiences them. We introduce a dataset co-annotated by paired blind and sighted professionals and a reference-free evaluation suite validated with sighted raters and blind and low-vision (BLV) participants.
 
 <img src="assets/fig1_whale_inline_ad.png" alt="Timeline example from a humpback whale video showing five video frames alongside timed tracks for the original narration (purple), silent gaps (light blue), professional human Gold AD from MTG-AD (green), and timing-prompted AutoAD (orange), both fitting descriptions cleanly inside the silent gaps between narration." width="100%" />
 
-<sub><b>Inline Audio Descriptions</b> must fit precisely into the silent gaps (light blue) between a video's speech (purple) without talking over dialogue or leaving long stretches of unexplained silence. Our evaluation-guided, timing-aware prompt helps multimodal LLMs generate useful descriptions (orange) within tight pause budgets, yet a gap persists relative to our dataset's professional AD (green) in pacing and narrative flow (e.g., framing camera perspectives such as <i>"drone footage"</i>).</sub>
+<sub><b>Inline Audio Descriptions</b> must fit precisely into the silent gaps (light blue) between a video's speech (purple) without talking over dialogue or leaving long stretches of unexplained silence. Our evaluation-guided, timing-aware prompt helps multimodal LLMs generate useful descriptions (orange) within tight pause budgets, yet a gap persists relative to our dataset's professional AD (green) in pacing and narrative flow (e.g., framing camera perspectives such as <i>"drone footage"</i>). Watch this example at [https://youtu.be/S17yR4ulOmw](https://youtu.be/S17yR4ulOmw).</sub>
 
 --------------------------------------------------------------------------------
 
